@@ -27,13 +27,19 @@
   <script>
     // Initialize player check
     function initGame() {
+      console.log('initGame called');
+      console.log('PlayerStorage:', PlayerStorage);
       const player = PlayerStorage.getCurrentPlayer();
+      console.log('Current player:', player);
+      console.log('localStorage mathpath_current_player:', localStorage.getItem('mathpath_current_player'));
 
       if (!player) {
         // Redirect to main menu to set player name
+        console.log('No player found, redirecting...');
         window.location.href = '../../index.html';
         return;
       }
+      console.log('Player found:', player);
 
       // Check for difficulty in URL params
       const urlParams = new URLSearchParams(window.location.search);

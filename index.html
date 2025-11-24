@@ -7,6 +7,10 @@
   <title>MathPath Games - Choose Your Adventure</title>
 
   <link rel="stylesheet" href="shared/styles/common.css">
+
+  <!-- Storage utilities -->
+  <script src="shared/utils/storage.js"></script>
+
   <style>
     body {
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -175,10 +179,191 @@
         grid-template-columns: 1fr;
       }
     }
+
+    /* Player Setup Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: var(--space-4);
+    }
+
+    .modal-overlay.hidden {
+      display: none;
+    }
+
+    .modal-content {
+      background: var(--color-surface);
+      border-radius: var(--radius-xl);
+      padding: var(--space-8);
+      max-width: 500px;
+      width: 100%;
+      box-shadow: var(--shadow-2xl);
+      text-align: center;
+    }
+
+    .modal-content h2 {
+      color: var(--color-primary);
+      margin-bottom: var(--space-4);
+      font-size: var(--font-size-2xl);
+    }
+
+    .modal-content p {
+      color: var(--color-text-secondary);
+      margin-bottom: var(--space-6);
+      line-height: var(--line-height-relaxed);
+    }
+
+    .player-input-group {
+      margin-bottom: var(--space-6);
+    }
+
+    .player-input-group label {
+      display: block;
+      font-weight: var(--font-weight-semibold);
+      color: var(--color-text);
+      margin-bottom: var(--space-2);
+      text-align: left;
+    }
+
+    .player-input-group input {
+      width: 100%;
+      padding: var(--space-4);
+      font-size: var(--font-size-lg);
+      border: 2px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      transition: all var(--transition-base);
+    }
+
+    .player-input-group input:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: var(--space-4);
+    }
+
+    .modal-actions .btn {
+      flex: 1;
+      padding: var(--space-4);
+      font-size: var(--font-size-lg);
+      font-weight: var(--font-weight-semibold);
+      border-radius: var(--radius-lg);
+      border: none;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+
+    .btn-primary {
+      background: var(--color-primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--color-primary-dark);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .error-message {
+      color: var(--color-error);
+      font-size: var(--font-size-sm);
+      margin-top: var(--space-2);
+      text-align: left;
+    }
+
+    .player-welcome {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: var(--radius-lg);
+      padding: var(--space-4) var(--space-6);
+      margin-bottom: var(--space-6);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: var(--shadow-md);
+    }
+
+    .player-welcome-text {
+      color: var(--color-text);
+      font-size: var(--font-size-lg);
+      font-weight: var(--font-weight-semibold);
+    }
+
+    .player-welcome-text span {
+      color: var(--color-primary);
+    }
+
+    .btn-change-player {
+      background: transparent;
+      border: 2px solid var(--color-primary);
+      color: var(--color-primary);
+      padding: var(--space-2) var(--space-4);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      font-weight: var(--font-weight-semibold);
+      transition: all var(--transition-fast);
+    }
+
+    .btn-change-player:hover {
+      background: var(--color-primary);
+      color: white;
+    }
   </style>
 </head>
 <body>
+  <!-- Player Setup Modal -->
+  <div class="modal-overlay" id="player-modal">
+    <div class="modal-content">
+      <h2>🎮 Welcome to MathPath Games!</h2>
+      <p>Enter your name to start playing and track your scores</p>
+
+      <div class="player-input-group">
+        <label for="player-name">Your Name:</label>
+        <input
+          type="text"
+          id="player-name"
+          placeholder="Enter your name..."
+          maxlength="20"
+          autocomplete="off"
+        >
+        <div class="error-message" id="name-error"></div>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn btn-primary" id="start-playing-btn">
+          Start Playing! 🚀
+        </button>
+      </div>
+    </div>
+  </div>
+
   <div class="main-container animate-slideUp">
+    <!-- Player Welcome Bar -->
+    <div class="player-welcome" id="player-welcome" style="display: none;">
+      <div class="player-welcome-text">
+        Welcome back, <span id="current-player-name"></span>!
+      </div>
+      <button class="btn-change-player" id="change-player-btn">
+        Change Player
+      </button>
+    </div>
+
     <div class="hero">
       <h1>🎮 MathPath Games</h1>
       <p>Master multiplication, addition, and subtraction through fun gameplay!</p>
@@ -250,5 +435,92 @@
       </ul>
     </div>
   </div>
+
+  <script>
+    // Player setup and management
+    document.addEventListener('DOMContentLoaded', () => {
+      const modal = document.getElementById('player-modal');
+      const playerWelcome = document.getElementById('player-welcome');
+      const playerNameInput = document.getElementById('player-name');
+      const startPlayingBtn = document.getElementById('start-playing-btn');
+      const changePlayerBtn = document.getElementById('change-player-btn');
+      const nameError = document.getElementById('name-error');
+      const currentPlayerName = document.getElementById('current-player-name');
+
+      // Check if player is already set
+      const existingPlayer = PlayerStorage.getCurrentPlayer();
+
+      if (existingPlayer) {
+        // Hide modal and show welcome bar
+        modal.classList.add('hidden');
+        playerWelcome.style.display = 'flex';
+        currentPlayerName.textContent = existingPlayer;
+      } else {
+        // Show modal for first-time user
+        modal.classList.remove('hidden');
+        playerWelcome.style.display = 'none';
+      }
+
+      // Handle player name submission
+      const submitPlayerName = () => {
+        const name = playerNameInput.value.trim();
+
+        if (!name) {
+          nameError.textContent = 'Please enter your name';
+          playerNameInput.focus();
+          return;
+        }
+
+        if (name.length < 2) {
+          nameError.textContent = 'Name must be at least 2 characters';
+          playerNameInput.focus();
+          return;
+        }
+
+        // Save player name
+        try {
+          console.log('Setting player name:', name);
+          const savedName = PlayerStorage.setCurrentPlayer(name);
+          console.log('Player name saved:', savedName);
+          console.log('localStorage check:', localStorage.getItem('mathpath_current_player'));
+          modal.classList.add('hidden');
+          playerWelcome.style.display = 'flex';
+          currentPlayerName.textContent = name;
+          nameError.textContent = '';
+        } catch (error) {
+          console.error('Error saving player:', error);
+          nameError.textContent = error.message;
+        }
+      };
+
+      // Start playing button
+      startPlayingBtn.addEventListener('click', submitPlayerName);
+
+      // Enter key to submit
+      playerNameInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+          submitPlayerName();
+        }
+      });
+
+      // Clear error on input
+      playerNameInput.addEventListener('input', () => {
+        nameError.textContent = '';
+      });
+
+      // Change player button
+      changePlayerBtn.addEventListener('click', () => {
+        modal.classList.remove('hidden');
+        playerNameInput.value = '';
+        playerNameInput.focus();
+        nameError.textContent = '';
+      });
+
+      // Focus input when modal is shown
+      if (!existingPlayer) {
+        playerNameInput.focus();
+      }
+    });
+  </script>
 </body>
 </html>
