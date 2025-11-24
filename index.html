@@ -324,6 +324,26 @@
       background: var(--color-primary);
       color: white;
     }
+
+    .footer {
+      text-align: center;
+      margin-top: var(--space-8);
+      padding-top: var(--space-6);
+    }
+
+    .footer a {
+      color: rgba(255, 255, 255, 0.9);
+      text-decoration: none;
+      font-size: var(--font-size-sm);
+      transition: all var(--transition-fast);
+      padding: var(--space-2) var(--space-4);
+      border-radius: var(--radius-md);
+    }
+
+    .footer a:hover {
+      color: white;
+      background: rgba(255, 255, 255, 0.1);
+    }
   </style>
 </head>
 <body>
@@ -331,19 +351,23 @@
   <div class="modal-overlay" id="player-modal">
     <div class="modal-content">
       <h2>🎮 Welcome to MathPath Games!</h2>
-      <p>Enter your name to start playing and track your scores</p>
+      <p>Choose a nickname</p>
 
       <div class="player-input-group">
-        <label for="player-name">Your Name:</label>
+        <label for="player-name">Nickname:</label>
         <input
           type="text"
           id="player-name"
-          placeholder="Enter your name..."
+          placeholder="Enter a nickname..."
           maxlength="20"
           autocomplete="off"
         >
         <div class="error-message" id="name-error"></div>
       </div>
+
+      <p style="font-size: var(--font-size-sm); color: var(--color-text-secondary); margin-top: var(--space-4);">
+        Your data stays on your device. <a href="privacy.html" style="color: var(--color-primary); text-decoration: underline;">Privacy info</a>
+      </p>
 
       <div class="modal-actions">
         <button class="btn btn-primary" id="start-playing-btn">
@@ -434,6 +458,10 @@
         <li>100% browser-based, no login needed</li>
       </ul>
     </div>
+
+    <div class="footer">
+      <a href="privacy.html">Privacy Information</a>
+    </div>
   </div>
 
   <script>
@@ -466,13 +494,13 @@
         const name = playerNameInput.value.trim();
 
         if (!name) {
-          nameError.textContent = 'Please enter your name';
+          nameError.textContent = 'Please enter a nickname';
           playerNameInput.focus();
           return;
         }
 
         if (name.length < 2) {
-          nameError.textContent = 'Name must be at least 2 characters';
+          nameError.textContent = 'Nickname must be at least 2 characters';
           playerNameInput.focus();
           return;
         }

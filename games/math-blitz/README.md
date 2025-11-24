@@ -111,7 +111,6 @@ Math Blitz is a lightning-fast math game that displays one question at a time wi
 - **Consistency**: Regular practice beats occasional long sessions
 - **Celebrate Streaks**: Acknowledge consecutive correct answers
 - **Speed vs. Accuracy**: Prioritize accuracy first, then work on speed
-- **Growth Tracking**: Take screenshots of results to show progress
 
 #### Motivation Tips
 - Compare to personal best, not others

@@ -44,6 +44,14 @@ class Scoreboard {
     this.renderTabContent(content);
 
     scoreboardEl.appendChild(content);
+
+    // Add privacy note at bottom
+    const privacyNote = document.createElement('div');
+    privacyNote.className = 'scoreboard-privacy-note';
+    privacyNote.style.cssText = 'text-align: center; margin-top: var(--space-4); padding-top: var(--space-4); border-top: 1px solid var(--color-border); font-size: var(--font-size-sm); color: var(--color-text-muted);';
+    privacyNote.innerHTML = 'Scores stored in your browser only';
+    scoreboardEl.appendChild(privacyNote);
+
     this.container.appendChild(scoreboardEl);
   }
 
