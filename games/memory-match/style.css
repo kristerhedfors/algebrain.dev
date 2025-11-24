@@ -152,7 +152,83 @@
   z-index: 10;
 }
 
-/* Feedback Animation */
+/* Error Overlay */
+.error-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  cursor: pointer;
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.error-message {
+  background: var(--color-error);
+  color: white;
+  padding: var(--space-8);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-xl);
+  text-align: center;
+  animation: errorPop 0.3s ease-out;
+}
+
+@keyframes errorPop {
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.error-icon {
+  font-size: 64px;
+  margin-bottom: var(--space-4);
+  animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-10px);
+  }
+  75% {
+    transform: translateX(10px);
+  }
+}
+
+.error-text {
+  font-size: var(--text-3xl);
+  font-weight: bold;
+  margin-bottom: var(--space-3);
+}
+
+.error-hint {
+  font-size: var(--text-base);
+  opacity: 0.9;
+  font-weight: normal;
+}
+
+/* Legacy Feedback Animation (kept for compatibility) */
 .feedback-animation {
   position: fixed;
   top: 50%;
@@ -506,6 +582,23 @@
     padding: var(--space-4);
   }
 
+  .error-message {
+    padding: var(--space-6);
+    margin: var(--space-4);
+  }
+
+  .error-icon {
+    font-size: 48px;
+  }
+
+  .error-text {
+    font-size: var(--text-xl);
+  }
+
+  .error-hint {
+    font-size: var(--text-sm);
+  }
+
   .results-screen,
   .welcome-screen {
     padding: var(--space-4);
@@ -555,5 +648,24 @@
     font-size: 12px;
     top: 4px;
     right: 4px;
+  }
+
+  .error-message {
+    padding: var(--space-4);
+    margin: var(--space-3);
+  }
+
+  .error-icon {
+    font-size: 40px;
+    margin-bottom: var(--space-3);
+  }
+
+  .error-text {
+    font-size: var(--text-lg);
+    margin-bottom: var(--space-2);
+  }
+
+  .error-hint {
+    font-size: var(--text-xs);
   }
 }

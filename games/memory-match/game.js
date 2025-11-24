@@ -14,6 +14,8 @@ class MemoryMatch {
     this.timeLimit = 180; // 3 minutes
     this.timeRemaining = this.timeLimit;
     this.gameEnded = false;
+    this.showingError = false;
+    this.errorAnswerId = null;
   }
 
   async initialize() {
@@ -112,8 +114,6 @@ class MemoryMatch {
   }
 
   render() {
-    const player = PlayerStorage.getCurrentPlayer();
-
     document.getElementById('game-container').innerHTML = `
       <div class="game-screen">
         <div class="game-header">
@@ -155,6 +155,16 @@ class MemoryMatch {
             </div>
           </div>
         </div>
+
+        ${this.showingError ? `
+          <div class="error-overlay" id="error-overlay">
+            <div class="error-message">
+              <div class="error-icon">✗</div>
+              <div class="error-text">Try Again</div>
+              <div class="error-hint">Click anywhere to continue</div>
+            </div>
+          </div>
+        ` : ''}
       </div>
     `;
 
@@ -217,6 +227,15 @@ class MemoryMatch {
   }
 
   attachEventListeners() {
+    // Handle error overlay dismissal
+    const errorOverlay = document.getElementById('error-overlay');
+    if (errorOverlay) {
+      errorOverlay.addEventListener('click', () => {
+        this.dismissError();
+      });
+      return; // Don't attach other listeners while showing error
+    }
+
     document.querySelectorAll('.problem-card').forEach(card => {
       card.addEventListener('click', () => {
         const questionId = card.dataset.id;
@@ -235,6 +254,7 @@ class MemoryMatch {
 
   handleProblemClick(questionId) {
     if (this.gameEnded) return;
+    if (this.showingError) return;
     if (this.matchedPairs.has(questionId)) return;
 
     // Toggle selection
@@ -257,6 +277,7 @@ class MemoryMatch {
 
   handleAnswerClick(questionId, answerId) {
     if (this.gameEnded) return;
+    if (this.showingError) return;
     if (!this.selectedProblem) return;
     if (this.matchedPairs.has(questionId)) return;
 
@@ -290,30 +311,41 @@ class MemoryMatch {
   }
 
   handleIncorrectMatch(answerId) {
-    const wrongAnimation = document.createElement('div');
-    wrongAnimation.className = 'feedback-animation wrong';
-    wrongAnimation.textContent = '✗ Try Again';
-    document.body.appendChild(wrongAnimation);
+    // Store the error state - keep cards flipped and show overlay
+    this.showingError = true;
+    this.errorAnswerId = answerId;
 
-    setTimeout(() => {
-      wrongAnimation.remove();
-    }, 1000);
+    // Re-render to show the error overlay with both cards visible
+    this.render();
 
-    // Flip cards back after delay
-    const problemId = this.selectedProblem.id;
-    this.selectedProblem = null;
-
-    setTimeout(() => {
-      this.flippedCards.delete(problemId);
-      this.flippedCards.delete(answerId);
-      this.render();
-    }, 800);
-
-    // Update attempts immediately
+    // Update attempts in the display
     const attemptsElement = document.getElementById('attempts');
     if (attemptsElement) {
       attemptsElement.textContent = this.attempts;
     }
+  }
+
+  dismissError() {
+    if (!this.showingError) return;
+
+    // Clear error state
+    const problemId = this.selectedProblem?.id;
+    const answerId = this.errorAnswerId;
+
+    this.showingError = false;
+    this.errorAnswerId = null;
+    this.selectedProblem = null;
+
+    // Flip cards back
+    if (problemId) {
+      this.flippedCards.delete(problemId);
+    }
+    if (answerId) {
+      this.flippedCards.delete(answerId);
+    }
+
+    // Re-render without error overlay
+    this.render();
   }
 
   endGame(reason) {
