@@ -613,17 +613,11 @@ class MemoryMatch {
     });
 
     // Render scoreboard
-    new Scoreboard(document.getElementById('scoreboard'), {
+    const scoreboard = new Scoreboard(document.getElementById('scoreboard'), {
       game: 'memory-match',
-      difficulty: this.difficulty,
-      limit: 10,
-      sortBy: 'attempts',
-      sortOrder: 'asc',
-      columns: ['player', 'attempts', 'timeUsed'],
-      formatters: {
-        timeUsed: (value) => MathUtils.formatTime(value)
-      }
+      difficulty: this.difficulty
     });
+    scoreboard.render();
 
     document.getElementById('play-again-btn').addEventListener('click', () => {
       window.location.reload();
