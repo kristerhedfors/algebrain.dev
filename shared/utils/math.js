@@ -249,8 +249,8 @@ function generateQuestionSet(count = 12, difficulty = 'normal') {
     questions.push(generateQuestion(difficulty, false));
   }
 
-  // Shuffle the entire set
-  return shuffle(questions).map((q, index) => ({
+  // Shuffle and ensure we return exactly count questions
+  return shuffle(questions).slice(0, count).map((q, index) => ({
     ...q,
     id: index + 1
   }));
