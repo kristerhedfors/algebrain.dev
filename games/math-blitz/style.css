@@ -1,0 +1,287 @@
+/**
+ * Math Blitz - Game Specific Styles
+ * Full-screen one-question-at-a-time format
+ */
+
+/* Blitz Container */
+.blitz-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-4);
+}
+
+/* Blitz Header */
+.blitz-header {
+  margin-bottom: var(--space-6);
+}
+
+.blitz-stats {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-4);
+  flex-wrap: wrap;
+  gap: var(--space-4);
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: var(--color-surface);
+  padding: var(--space-3) var(--space-5);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  min-width: 100px;
+}
+
+.stat-label {
+  font-size: var(--font-size-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-secondary);
+  font-weight: var(--font-weight-semibold);
+  margin-bottom: var(--space-1);
+}
+
+.stat-value {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+}
+
+.streak-value {
+  color: var(--color-warning);
+}
+
+/* Question Container */
+.blitz-question-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-8) 0;
+}
+
+.blitz-question-card {
+  background: var(--color-surface);
+  border-radius: var(--radius-xl);
+  padding: var(--space-10);
+  box-shadow: var(--shadow-xl);
+  max-width: 600px;
+  width: 100%;
+  text-align: center;
+  position: relative;
+}
+
+.question-type-badge {
+  display: inline-block;
+  background: var(--color-primary);
+  color: white;
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  margin-bottom: var(--space-6);
+}
+
+.blitz-question-text {
+  font-size: var(--font-size-4xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+  margin-bottom: var(--space-8);
+  line-height: 1.2;
+}
+
+/* Choice Buttons */
+.blitz-choices {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: var(--space-4);
+}
+
+.blitz-choice-btn {
+  background: var(--color-bg-alt);
+  color: var(--color-text);
+  border: 3px solid transparent;
+  padding: var(--space-5);
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  min-height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.blitz-choice-btn:hover {
+  background: var(--color-primary);
+  color: white;
+  transform: scale(1.08);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--color-primary-dark);
+}
+
+.blitz-choice-btn:active {
+  transform: scale(1.02);
+}
+
+/* Pulse animation for choice buttons */
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 20px 5px rgba(99, 102, 241, 0.2);
+  }
+}
+
+.blitz-choice-btn:hover {
+  animation: pulse-glow 1.5s infinite;
+}
+
+/* Feedback Overlay */
+.feedback-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: var(--z-modal);
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+  pointer-events: none;
+}
+
+.feedback-overlay.show {
+  opacity: 1;
+}
+
+.feedback-content {
+  text-align: center;
+  transform: scale(0.8);
+  transition: transform var(--transition-fast);
+}
+
+.feedback-overlay.show .feedback-content {
+  transform: scale(1);
+}
+
+.feedback-icon {
+  font-size: 8rem;
+  line-height: 1;
+  margin-bottom: var(--space-4);
+}
+
+.feedback-content.correct .feedback-icon {
+  color: var(--color-success);
+  animation: bounce 0.6s;
+}
+
+.feedback-content.incorrect .feedback-icon {
+  color: var(--color-error);
+}
+
+.feedback-text {
+  font-size: var(--font-size-4xl);
+  font-weight: var(--font-weight-bold);
+  color: white;
+  margin-bottom: var(--space-2);
+}
+
+.feedback-bonus {
+  font-size: var(--font-size-xl);
+  color: var(--color-warning);
+  font-weight: var(--font-weight-semibold);
+}
+
+/* Mobile Responsive */
+@media (max-width: 767px) {
+  .blitz-question-card {
+    padding: var(--space-6);
+  }
+
+  .blitz-question-text {
+    font-size: var(--font-size-3xl);
+  }
+
+  .blitz-choices {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-3);
+  }
+
+  .blitz-choice-btn {
+    font-size: var(--font-size-xl);
+    min-height: 60px;
+    padding: var(--space-4);
+  }
+
+  .stat-item {
+    min-width: 80px;
+    padding: var(--space-2) var(--space-3);
+  }
+
+  .stat-value {
+    font-size: var(--font-size-xl);
+  }
+
+  .feedback-icon {
+    font-size: 6rem;
+  }
+
+  .feedback-text {
+    font-size: var(--font-size-3xl);
+  }
+}
+
+/* Tablet */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .blitz-question-card {
+    padding: var(--space-8);
+  }
+
+  .blitz-choices {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Desktop - Full grid */
+@media (min-width: 1024px) {
+  .blitz-choices {
+    grid-template-columns: repeat(5, 1fr);
+  }
+
+  .blitz-question-container {
+    padding: var(--space-12) 0;
+  }
+}
+
+/* Animations */
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.blitz-question-card {
+  animation: slideInUp var(--transition-slow);
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .blitz-choice-btn {
+    border: 3px solid currentColor;
+  }
+}

@@ -1,0 +1,412 @@
+/**
+ * Number Ninja - Game Specific Styles
+ * Ninja-themed with combos, particles, and achievements
+ */
+
+/* Ninja Container */
+.ninja-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+  padding: var(--space-4);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Ninja Header */
+.ninja-header {
+  margin-bottom: var(--space-6);
+}
+
+.ninja-stats-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-4);
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.ninja-stat {
+  background: rgba(255, 255, 255, 0.95);
+  padding: var(--space-3) var(--space-5);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 100px;
+}
+
+.ninja-stat .stat-label {
+  font-size: var(--font-size-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-secondary);
+  font-weight: var(--font-weight-semibold);
+  margin-bottom: var(--space-1);
+}
+
+.ninja-stat .stat-value {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+}
+
+.combo-stat {
+  background: linear-gradient(135deg, var(--color-warning) 0%, var(--color-warning-dark) 100%);
+}
+
+.combo-stat .stat-label,
+.combo-stat .stat-value {
+  color: white;
+}
+
+.combo-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.combo-level {
+  font-size: var(--font-size-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  animation: pulse 0.6s infinite;
+}
+
+.multiplier-badge {
+  background: linear-gradient(135deg, var(--color-error) 0%, var(--color-warning) 100%);
+  color: white;
+  padding: var(--space-3) var(--space-6);
+  border-radius: var(--radius-full);
+  text-align: center;
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-lg);
+  margin-top: var(--space-3);
+  box-shadow: var(--shadow-lg);
+  animation: pulse 1s infinite;
+}
+
+/* Question Area */
+.ninja-question-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-8);
+  padding: var(--space-6) 0;
+}
+
+.ninja-card {
+  background: var(--color-surface);
+  border-radius: var(--radius-xl);
+  padding: var(--space-8);
+  box-shadow: var(--shadow-xl);
+  max-width: 600px;
+  width: 100%;
+  text-align: center;
+  position: relative;
+  border: 3px solid var(--color-primary);
+}
+
+.question-badge {
+  position: absolute;
+  top: -15px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--color-primary);
+  color: white;
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-lg);
+  box-shadow: var(--shadow-md);
+}
+
+.ninja-question-text {
+  font-size: var(--font-size-4xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+  margin: var(--space-4) 0;
+}
+
+.ninja-question-number {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  font-weight: var(--font-weight-semibold);
+}
+
+/* Ninja Stars (Answer Buttons) */
+.ninja-stars {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  max-width: 800px;
+}
+
+.ninja-star {
+  background: linear-gradient(135deg, var(--color-warning) 0%, var(--color-warning-dark) 100%);
+  color: white;
+  border: none;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  position: relative;
+}
+
+.ninja-star::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  transform: translate(-50%, -50%);
+  transition: width var(--transition-fast), height var(--transition-fast);
+}
+
+.ninja-star:hover::before {
+  width: 110%;
+  height: 110%;
+}
+
+.ninja-star:hover {
+  transform: scale(1.15) rotate(20deg);
+  box-shadow: 0 10px 30px rgba(245, 158, 11, 0.5);
+}
+
+.ninja-star:active {
+  transform: scale(1.05) rotate(10deg);
+}
+
+.star-icon {
+  font-size: var(--font-size-3xl);
+  position: relative;
+  z-index: 1;
+}
+
+.star-value {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  position: relative;
+  z-index: 1;
+}
+
+/* Particles Container */
+#particles-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: var(--z-toast);
+}
+
+.particle {
+  position: absolute;
+  font-size: var(--font-size-3xl);
+  transition: all 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  pointer-events: none;
+}
+
+/* Score Popup */
+.score-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: var(--font-size-4xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-success);
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  animation: scoreFloat 1.5s ease-out;
+  pointer-events: none;
+  z-index: var(--z-toast);
+}
+
+.multiplier-text {
+  display: block;
+  font-size: var(--font-size-xl);
+  color: var(--color-warning);
+  margin-top: var(--space-2);
+}
+
+@keyframes scoreFloat {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.5);
+  }
+  50% {
+    opacity: 1;
+    transform: translate(-50%, -60%) scale(1.2);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -80%) scale(1);
+  }
+}
+
+/* Error Feedback */
+.error-feedback {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.8);
+  background: rgba(239, 68, 68, 0.95);
+  color: white;
+  padding: var(--space-8);
+  border-radius: var(--radius-xl);
+  text-align: center;
+  box-shadow: var(--shadow-xl);
+  opacity: 0;
+  transition: all var(--transition-base);
+  z-index: var(--z-toast);
+  pointer-events: none;
+}
+
+.error-feedback.show {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.error-icon {
+  font-size: 6rem;
+  margin-bottom: var(--space-4);
+}
+
+.error-text {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+}
+
+/* Mobile Responsive */
+@media (max-width: 767px) {
+  .ninja-container {
+    padding: var(--space-3);
+  }
+
+  .ninja-card {
+    padding: var(--space-6);
+  }
+
+  .ninja-question-text {
+    font-size: var(--font-size-3xl);
+  }
+
+  .ninja-stars {
+    gap: var(--space-3);
+  }
+
+  .ninja-star {
+    width: 90px;
+    height: 90px;
+  }
+
+  .star-icon {
+    font-size: var(--font-size-2xl);
+  }
+
+  .star-value {
+    font-size: var(--font-size-lg);
+  }
+
+  .ninja-stat {
+    min-width: 80px;
+    padding: var(--space-2) var(--space-3);
+  }
+
+  .ninja-stat .stat-value {
+    font-size: var(--font-size-xl);
+  }
+
+  .score-popup {
+    font-size: var(--font-size-3xl);
+  }
+
+  .error-icon {
+    font-size: 4rem;
+  }
+
+  .error-text {
+    font-size: var(--font-size-xl);
+  }
+}
+
+/* Tablet */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .ninja-stars {
+    max-width: 600px;
+  }
+
+  .ninja-star {
+    width: 100px;
+    height: 100px;
+  }
+}
+
+/* Desktop */
+@media (min-width: 1024px) {
+  .ninja-question-area {
+    padding: var(--space-12) 0;
+  }
+}
+
+/* Animations */
+@keyframes ninjaEnter {
+  from {
+    opacity: 0;
+    transform: translateY(30px) rotate(-10deg);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) rotate(0deg);
+  }
+}
+
+.ninja-card {
+  animation: ninjaEnter var(--transition-slow);
+}
+
+.ninja-star {
+  animation: starSpin 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@keyframes starSpin {
+  0% {
+    opacity: 0;
+    transform: scale(0) rotate(-180deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+/* Stagger animation for stars */
+.ninja-star:nth-child(1) { animation-delay: 0s; }
+.ninja-star:nth-child(2) { animation-delay: 0.1s; }
+.ninja-star:nth-child(3) { animation-delay: 0.2s; }
+.ninja-star:nth-child(4) { animation-delay: 0.3s; }
+.ninja-star:nth-child(5) { animation-delay: 0.4s; }
+
+/* High Contrast */
+@media (prefers-contrast: high) {
+  .ninja-star {
+    border: 3px solid white;
+  }
+
+  .ninja-card {
+    border-width: 4px;
+  }
+}

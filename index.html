@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="MathPath Games - Fun multiplication, addition, and subtraction games for kids">
+  <title>MathPath Games - Choose Your Adventure</title>
+
+  <link rel="stylesheet" href="shared/styles/common.css">
+  <style>
+    body {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-4);
+    }
+
+    .main-container {
+      max-width: 1000px;
+      width: 100%;
+    }
+
+    .hero {
+      text-align: center;
+      margin-bottom: var(--space-10);
+      color: white;
+    }
+
+    .hero h1 {
+      font-size: var(--font-size-4xl);
+      margin-bottom: var(--space-4);
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .hero p {
+      font-size: var(--font-size-xl);
+      opacity: 0.95;
+      margin-bottom: 0;
+    }
+
+    .games-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: var(--space-6);
+      margin-bottom: var(--space-8);
+    }
+
+    .game-card {
+      background: var(--color-surface);
+      border-radius: var(--radius-xl);
+      padding: var(--space-8);
+      box-shadow: var(--shadow-xl);
+      transition: all var(--transition-base);
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      border: 3px solid transparent;
+    }
+
+    .game-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+      border-color: var(--color-primary);
+    }
+
+    .game-icon {
+      font-size: 4rem;
+      margin-bottom: var(--space-4);
+    }
+
+    .game-title {
+      font-size: var(--font-size-2xl);
+      font-weight: var(--font-weight-bold);
+      color: var(--color-primary);
+      margin-bottom: var(--space-3);
+    }
+
+    .game-description {
+      color: var(--color-text-secondary);
+      margin-bottom: var(--space-4);
+      line-height: var(--line-height-relaxed);
+    }
+
+    .game-features {
+      list-style: none;
+      padding: 0;
+      margin: var(--space-4) 0;
+      text-align: left;
+      width: 100%;
+    }
+
+    .game-features li {
+      padding: var(--space-2) 0;
+      color: var(--color-text-secondary);
+      font-size: var(--font-size-sm);
+    }
+
+    .game-features li::before {
+      content: "✓";
+      color: var(--color-success);
+      font-weight: bold;
+      margin-right: var(--space-2);
+    }
+
+    .play-button {
+      background: var(--color-primary);
+      color: white;
+      padding: var(--space-4) var(--space-8);
+      border-radius: var(--radius-lg);
+      font-weight: var(--font-weight-semibold);
+      margin-top: auto;
+      transition: all var(--transition-fast);
+    }
+
+    .game-card:hover .play-button {
+      background: var(--color-primary-dark);
+      transform: scale(1.05);
+    }
+
+    .info-section {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: var(--radius-xl);
+      padding: var(--space-6);
+      text-align: center;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .info-section h2 {
+      color: var(--color-primary);
+      margin-bottom: var(--space-4);
+    }
+
+    .info-section p {
+      color: var(--color-text-secondary);
+      line-height: var(--line-height-relaxed);
+      margin-bottom: var(--space-4);
+    }
+
+    .info-section ul {
+      list-style: none;
+      padding: 0;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: var(--space-4);
+      text-align: left;
+    }
+
+    .info-section li {
+      padding-left: var(--space-6);
+      position: relative;
+      color: var(--color-text-secondary);
+    }
+
+    .info-section li::before {
+      content: "📚";
+      position: absolute;
+      left: 0;
+    }
+
+    @media (max-width: 767px) {
+      .hero h1 {
+        font-size: var(--font-size-3xl);
+      }
+
+      .hero p {
+        font-size: var(--font-size-lg);
+      }
+
+      .games-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="main-container animate-slideUp">
+    <div class="hero">
+      <h1>🎮 MathPath Games</h1>
+      <p>Master multiplication, addition, and subtraction through fun gameplay!</p>
+    </div>
+
+    <div class="games-grid">
+      <!-- Multiplication Sprint -->
+      <a href="games/multiplication-sprint/index.html" class="game-card">
+        <div class="game-icon">🏃</div>
+        <h2 class="game-title">Multiplication Sprint</h2>
+        <p class="game-description">
+          Answer all 20 questions in a grid format. Choose your own path through the questions!
+        </p>
+        <ul class="game-features">
+          <li>All questions visible at once</li>
+          <li>Answer in any order</li>
+          <li>2-minute time limit</li>
+          <li>Perfect for strategic thinkers</li>
+        </ul>
+        <div class="play-button">Start Sprint 🚀</div>
+      </a>
+
+      <!-- Math Blitz -->
+      <a href="games/math-blitz/index.html" class="game-card">
+        <div class="game-icon">⚡</div>
+        <h2 class="game-title">Math Blitz</h2>
+        <p class="game-description">
+          Lightning-fast one-question-at-a-time challenge with streak tracking!
+        </p>
+        <ul class="game-features">
+          <li>Full-screen focus mode</li>
+          <li>Build answer streaks</li>
+          <li>Speed bonus indicators</li>
+          <li>Perfect for concentration</li>
+        </ul>
+        <div class="play-button">Start Blitz ⚡</div>
+      </a>
+
+      <!-- Number Ninja -->
+      <a href="games/number-ninja/index.html" class="game-card">
+        <div class="game-icon">🥷</div>
+        <h2 class="game-title">Number Ninja</h2>
+        <p class="game-description">
+          Gamified math training with combos, multipliers, and achievement badges!
+        </p>
+        <ul class="game-features">
+          <li>Combo system with multipliers</li>
+          <li>Unlock achievements</li>
+          <li>Particle effects & animations</li>
+          <li>Perfect for game lovers</li>
+        </ul>
+        <div class="play-button">Begin Training 🥷</div>
+      </a>
+    </div>
+
+    <div class="info-section">
+      <h2>🎯 What You'll Practice</h2>
+      <p>
+        All three games help you master the same skills with different gameplay styles.
+        Choose the one that matches your learning preference!
+      </p>
+      <ul>
+        <li>Multiplication tables 2-12</li>
+        <li>Addition with 2-3 digit numbers</li>
+        <li>Subtraction with 2-3 digit numbers</li>
+        <li>Three difficulty levels each</li>
+        <li>Track scores on leaderboards</li>
+        <li>100% browser-based, no login needed</li>
+      </ul>
+    </div>
+  </div>
+</body>
+</html>

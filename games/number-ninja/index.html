@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Number Ninja - Gamified math training with combos and achievements">
+  <title>Number Ninja | MathPath Games</title>
+
+  <!-- Common Styles -->
+  <link rel="stylesheet" href="../../shared/styles/common.css">
+  <!-- Game-specific Styles -->
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Shared utilities - load in order -->
+  <script src="../../shared/utils/storage.js"></script>
+  <script src="../../shared/utils/math.js"></script>
+  <script src="../../shared/utils/scoreboard.js"></script>
+
+  <!-- Game logic -->
+  <script src="game.js"></script>
+</head>
+<body>
+  <div id="game-container"></div>
+
+  <script>
+    let game = null;
+
+    /**
+     * Initialize the application
+     */
+    function init() {
+      const currentPlayer = PlayerStorage.getCurrentPlayer();
+
+      if (!currentPlayer) {
+        showPlayerNamePrompt();
+      } else {
+        showDifficultySelection();
+      }
+    }
+
+    /**
+     * Show player name prompt
+     */
+    function showPlayerNamePrompt() {
+      const container = document.getElementById('game-container');
+      container.innerHTML = `
+        <div class="container container-sm" style="min-height: 100vh; display: flex; align-items: center; justify-content: center;">
+          <div class="card text-center animate-slideUp">
+            <h1 style="font-size: var(--font-size-4xl); margin-bottom: var(--space-4);">
+              🎮 Welcome to MathPath!
+            </h1>
+            <p style="font-size: var(--font-size-lg); color: var(--color-text-secondary); margin-bottom: var(--space-8);">
+              Let's get started by entering your name
+            </p>
+
+            <form id="name-form" onsubmit="return false;">
+              <div style="margin-bottom: var(--space-6);">
+                <label for="player-name" style="text-align: left;">Player Name</label>
+                <input
+                  type="text"
+                  id="player-name"
+                  name="player-name"
+                  placeholder="Enter your name"
+                  maxlength="20"
+                  required
+                  autofocus
+                  style="text-align: center; font-size: var(--font-size-xl);"
+                />
+              </div>
+
+              <button type="submit" class="btn-primary btn-lg btn-full">
+                Begin Training 🥷
+              </button>
+            </form>
+
+            <p style="font-size: var(--font-size-sm); color: var(--color-text-muted); margin-top: var(--space-6); margin-bottom: 0;">
+              Your name is stored locally to track your scores
+            </p>
+          </div>
+        </div>
+      `;
+
+      // Handle form submission
+      const form = document.getElementById('name-form');
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const input = document.getElementById('player-name');
+        const name = input.value.trim();
+
+        if (name.length > 0) {
+          PlayerStorage.setCurrentPlayer(name);
+          showDifficultySelection();
+        }
+      });
+    }
+
+    /**
+     * Show difficulty selection
+     */
+    function showDifficultySelection() {
+      const playerName = PlayerStorage.getCurrentPlayer();
+      const container = document.getElementById('game-container');
+
+      container.innerHTML = `
+        <div class="container container-md" style="min-height: 100vh; display: flex; align-items: center; justify-content: center;">
+          <div class="card text-center animate-slideUp">
+            <h1 style="font-size: var(--font-size-4xl); margin-bottom: var(--space-2);">
+              🥷 Number Ninja
+            </h1>
+            <p style="font-size: var(--font-size-lg); color: var(--color-text-secondary); margin-bottom: var(--space-2);">
+              Welcome back, <strong>${playerName}</strong>!
+            </p>
+            <button
+              onclick="changePlayer()"
+              style="background: none; border: none; color: var(--color-primary); text-decoration: underline; cursor: pointer; font-size: var(--font-size-sm); margin-bottom: var(--space-8); padding: var(--space-2);"
+            >
+              Change Player
+            </button>
+
+            <h2 style="margin-bottom: var(--space-6); color: var(--color-primary);">
+              Choose Your Training Level
+            </h2>
+
+            <div style="display: grid; gap: var(--space-4); margin-bottom: var(--space-6);">
+              <button
+                class="difficulty-btn btn-lg"
+                onclick="startGame('easy')"
+                style="background: linear-gradient(135deg, var(--color-success) 0%, var(--color-success-dark) 100%); color: white; text-align: left; padding: var(--space-6); display: grid; grid-template-columns: auto 1fr; gap: var(--space-4); align-items: center;"
+              >
+                <span style="font-size: var(--font-size-4xl);">😊</span>
+                <div>
+                  <div style="font-size: var(--font-size-2xl); font-weight: var(--font-weight-bold); margin-bottom: var(--space-2);">Apprentice</div>
+                  <div style="font-size: var(--font-size-sm); opacity: 0.9;">Tables 2-6, gentle introduction</div>
+                </div>
+              </button>
+
+              <button
+                class="difficulty-btn btn-lg"
+                onclick="startGame('normal')"
+                style="background: linear-gradient(135deg, var(--color-warning) 0%, var(--color-warning-dark) 100%); color: white; text-align: left; padding: var(--space-6); display: grid; grid-template-columns: auto 1fr; gap: var(--space-4); align-items: center;"
+              >
+                <span style="font-size: var(--font-size-4xl);">🥷</span>
+                <div>
+                  <div style="font-size: var(--font-size-2xl); font-weight: var(--font-weight-bold); margin-bottom: var(--space-2);">Ninja</div>
+                  <div style="font-size: var(--font-size-sm); opacity: 0.9;">Tables 2-10, balanced challenge</div>
+                </div>
+              </button>
+
+              <button
+                class="difficulty-btn btn-lg"
+                onclick="startGame('hard')"
+                style="background: linear-gradient(135deg, var(--color-error) 0%, var(--color-error-dark) 100%); color: white; text-align: left; padding: var(--space-6); display: grid; grid-template-columns: auto 1fr; gap: var(--space-4); align-items: center;"
+              >
+                <span style="font-size: var(--font-size-4xl);">👹</span>
+                <div>
+                  <div style="font-size: var(--font-size-2xl); font-weight: var(--font-weight-bold); margin-bottom: var(--space-2);">Master</div>
+                  <div style="font-size: var(--font-size-sm); opacity: 0.9;">Tables 2-12, ultimate challenge</div>
+                </div>
+              </button>
+            </div>
+
+            <div style="background: var(--color-bg-alt); padding: var(--space-4); border-radius: var(--radius-lg); margin-top: var(--space-6);">
+              <p style="font-size: var(--font-size-sm); color: var(--color-text-secondary); margin: 0;">
+                💡 <strong>Tip:</strong> Build combos for score multipliers! Wrong answers reset your combo.
+              </p>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    /**
+     * Start game with selected difficulty
+     */
+    window.startGame = async function(difficulty) {
+      game = new NumberNinja(difficulty);
+      window.game = game; // Make game accessible globally for onclick handlers
+      await game.initialize();
+    };
+
+    /**
+     * Change player name
+     */
+    window.changePlayer = function() {
+      PlayerStorage.clearCurrentPlayer();
+      init();
+    };
+
+    // Initialize app
+    init();
+  </script>
+</body>
+</html>
