@@ -229,6 +229,14 @@ class NumberNinja {
   selectAnswer(choiceIndex) {
     if (this.gameEnded) return;
 
+    // Disable all buttons immediately and remove focus to prevent visual state persistence
+    const allButtons = document.querySelectorAll('.ninja-star');
+    allButtons.forEach(btn => {
+      btn.disabled = true;
+      btn.blur(); // Remove focus to clear :active and :focus states
+      btn.style.pointerEvents = 'none'; // Prevent any further interaction
+    });
+
     const question = this.questions[this.currentQuestionIndex];
     const isCorrect = choiceIndex === question.correctChoice;
     const timeSpent = (Date.now() - this.questionStartTime) / 1000;
