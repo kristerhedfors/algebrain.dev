@@ -45,6 +45,23 @@ const PlayerStorage = {
    */
   clearCurrentPlayer() {
     localStorage.removeItem(CURRENT_PLAYER_KEY);
+  },
+
+  /**
+   * Get all unique player names from scores
+   * @returns {Array<string>} Sorted array of unique player names
+   */
+  getAllPlayerNames() {
+    const scores = ScoreStorage.getAllScores();
+    const names = new Set();
+
+    scores.forEach(score => {
+      if (score.playerName) {
+        names.add(score.playerName);
+      }
+    });
+
+    return Array.from(names).sort((a, b) => a.localeCompare(b));
   }
 };
 

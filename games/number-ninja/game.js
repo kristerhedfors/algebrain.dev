@@ -26,7 +26,7 @@ class NumberNinja {
    * Initialize the game
    */
   async initialize() {
-    this.questions = MathUtils.generateQuestionSet(20, this.difficulty);
+    this.questions = MathUtils.generateQuestionSet(12, this.difficulty);
     this.renderWelcome();
   }
 
@@ -462,6 +462,10 @@ class NumberNinja {
     container.innerHTML = `
       <div class="container container-md animate-slideUp">
         <div class="card text-center">
+          <div style="display: flex; justify-content: flex-end; margin-bottom: var(--space-4);">
+            <div id="player-switcher-container"></div>
+          </div>
+
           <h1 style="font-size: var(--font-size-4xl); margin-bottom: var(--space-6);">
             ${accuracy === 100 ? '🥷 Ninja Master!' : '📊 Training Complete'}
           </h1>
@@ -532,6 +536,11 @@ class NumberNinja {
       difficulty: this.difficulty
     });
     scoreboard.render();
+
+    // Add player switcher
+    createPlayerSwitcher('#player-switcher-container', () => {
+      window.location.reload();
+    });
   }
 
   /**

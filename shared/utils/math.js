@@ -28,20 +28,21 @@ function shuffle(array) {
 
 /**
  * Difficulty configuration for multiplication tables
+ * Balanced so that easy questions don't appear on hard, and vice versa
  */
 const MULTIPLICATION_CONFIG = {
   easy: {
-    tables: [2, 3, 4, 5, 6],  // Easier tables
+    tables: [2, 3, 4, 5, 10],  // Simplest tables (2x, 10x, and easy single digits)
     range: [2, 10]  // Multiplied by 2-10
   },
   normal: {
-    tables: [2, 3, 4, 5, 6, 7, 8, 9, 10],  // Include some harder ones
+    tables: [3, 4, 5, 6, 7, 8, 9],  // Mid-range tables (no super easy 2x/10x, no hardest 11x/12x)
     range: [2, 12]  // Multiplied by 2-12
   },
   hard: {
-    tables: [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],  // All tables
+    tables: [6, 7, 8, 9, 11, 12],  // Hardest tables (no 2x or 10x)
     range: [2, 12],
-    emphasize: [7, 9, 11, 12]  // More questions from these tables
+    emphasize: [7, 9, 11, 12]  // More questions from the most challenging tables
   }
 };
 
@@ -227,14 +228,14 @@ function generateQuestion(difficulty = 'normal', forceMultiplication = false) {
 
 /**
  * Generate a set of questions for a round
- * @param {number} count - Number of questions (default 20)
+ * @param {number} count - Number of questions (default 12)
  * @param {string} difficulty - Difficulty level
  * @returns {Array} Array of question objects
  */
-function generateQuestionSet(count = 20, difficulty = 'normal') {
+function generateQuestionSet(count = 12, difficulty = 'normal') {
   const questions = [];
 
-  // Calculate how many should be addition/subtraction (20% = 4 out of 20)
+  // Calculate how many should be addition/subtraction (20% = 2-3 out of 12)
   const addSubCount = Math.floor(count * 0.2);
   const multiplicationCount = count - addSubCount;
 

@@ -20,8 +20,8 @@ class MultiplicationSprint {
    * Initialize the game
    */
   async initialize() {
-    // Generate 20 questions
-    this.questions = MathUtils.generateQuestionSet(20, this.difficulty);
+    // Generate 12 questions
+    this.questions = MathUtils.generateQuestionSet(12, this.difficulty);
     this.renderWelcome();
   }
 
@@ -35,7 +35,7 @@ class MultiplicationSprint {
         <div class="card text-center">
           <h1 class="game-title">🏃 Multiplication Sprint</h1>
           <p style="font-size: var(--font-size-lg); margin-bottom: var(--space-6); color: var(--color-text-secondary);">
-            Answer all 20 questions as fast as you can!
+            Answer all 12 questions as fast as you can!
           </p>
 
           <div style="background: var(--color-bg-alt); padding: var(--space-6); border-radius: var(--radius-lg); margin-bottom: var(--space-6);">
@@ -43,7 +43,7 @@ class MultiplicationSprint {
             <ul style="text-align: left; max-width: 400px; margin: 0 auto; list-style: none; padding: 0;">
               <li style="margin-bottom: var(--space-3); padding-left: var(--space-6); position: relative;">
                 <span style="position: absolute; left: 0; color: var(--color-primary);">1️⃣</span>
-                All 20 questions appear in a grid
+                All 12 questions appear in a grid
               </li>
               <li style="margin-bottom: var(--space-3); padding-left: var(--space-6); position: relative;">
                 <span style="position: absolute; left: 0; color: var(--color-primary);">2️⃣</span>
@@ -258,6 +258,10 @@ class MultiplicationSprint {
     container.innerHTML = `
       <div class="container container-md animate-slideUp">
         <div class="card text-center">
+          <div style="display: flex; justify-content: flex-end; margin-bottom: var(--space-4);">
+            <div id="player-switcher-container"></div>
+          </div>
+
           <h1 style="font-size: var(--font-size-4xl); margin-bottom: var(--space-6);">
             ${accuracy === 100 ? '🎉 Perfect Score!' : '📊 Results'}
           </h1>
@@ -322,6 +326,12 @@ class MultiplicationSprint {
       difficulty: this.difficulty
     });
     scoreboard.render();
+
+    // Add player switcher
+    createPlayerSwitcher('#player-switcher-container', (newPlayerName) => {
+      // Reload the page to show difficulty selection for new player
+      window.location.reload();
+    });
   }
 
   /**
