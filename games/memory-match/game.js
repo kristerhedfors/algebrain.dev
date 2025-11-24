@@ -6,6 +6,7 @@ class MemoryMatch {
     this.flippedCards = new Set();
     this.matchedPairs = new Set();
     this.selectedProblem = null;
+    this.selectedAnswer = null;
     this.attempts = 0;
     this.correctMatches = 0;
     this.startTime = null;
@@ -15,12 +16,26 @@ class MemoryMatch {
     this.timeRemaining = this.timeLimit;
     this.gameEnded = false;
     this.showingError = false;
-    this.errorAnswerId = null;
+    this.errorCardId = null;
   }
 
   async initialize() {
-    const questionSet = MathUtils.generateQuestionSet(9, this.difficulty);
-    this.questions = questionSet.map((q, index) => ({
+    // Generate questions until we have 9 with unique answers
+    let uniqueQuestions = [];
+    const seenAnswers = new Set();
+
+    while (uniqueQuestions.length < 9) {
+      const questionSet = MathUtils.generateQuestionSet(15, this.difficulty);
+
+      for (const q of questionSet) {
+        if (!seenAnswers.has(q.answer) && uniqueQuestions.length < 9) {
+          seenAnswers.add(q.answer);
+          uniqueQuestions.push(q);
+        }
+      }
+    }
+
+    this.questions = uniqueQuestions.map((q, index) => ({
       id: `q-${index}`,
       problem: q.text,
       answer: q.answer,
@@ -28,6 +43,7 @@ class MemoryMatch {
     }));
 
     // Create shuffled answers array for right grid
+    // Each answer corresponds to exactly one question
     this.answers = [...this.questions]
       .sort(() => Math.random() - 0.5)
       .map((q, index) => ({
@@ -62,8 +78,8 @@ class MemoryMatch {
             <div class="instructions">
               <h3>How to Play:</h3>
               <ul>
-                <li><strong>Left Grid:</strong> Click cards to flip and reveal math problems</li>
-                <li><strong>Right Grid:</strong> Click the answer that matches your flipped problem</li>
+                <li><strong>Flip any card:</strong> Click any card from either grid to start</li>
+                <li><strong>Find the match:</strong> Click the matching card from the other grid</li>
                 <li><strong>Match:</strong> Correct matches stay revealed and highlighted</li>
                 <li><strong>Goal:</strong> Match all 9 pairs in the fewest attempts possible</li>
                 <li><strong>Time Limit:</strong> 3 minutes to complete the challenge</li>
@@ -142,14 +158,14 @@ class MemoryMatch {
 
         <div class="memory-container">
           <div class="grid-section">
-            <h3 class="grid-title">Problems (Click to Flip)</h3>
+            <h3 class="grid-title">Problems</h3>
             <div class="card-grid" id="problems-grid">
               ${this.renderProblemsGrid()}
             </div>
           </div>
 
           <div class="grid-section">
-            <h3 class="grid-title">Answers (Click to Match)</h3>
+            <h3 class="grid-title">Answers</h3>
             <div class="card-grid" id="answers-grid">
               ${this.renderAnswersGrid()}
             </div>
@@ -205,21 +221,30 @@ class MemoryMatch {
     return this.answers.map(a => {
       const isFlipped = this.flippedCards.has(a.id);
       const isMatched = this.matchedPairs.has(a.questionId);
-      const isDisabled = !this.selectedProblem || isMatched;
+      const isSelected = this.selectedAnswer?.id === a.id;
 
       const classes = [
         'card',
         'answer-card',
         isFlipped || isMatched ? 'flipped' : '',
         isMatched ? 'matched' : '',
-        isDisabled ? 'disabled' : ''
+        isSelected ? 'selected' : ''
       ].filter(Boolean).join(' ');
+
+      // Get the question text if matched
+      const question = this.questions.find(q => q.id === a.questionId);
+      const questionText = question ? question.problem : '';
+
+      // Show both question and answer if matched, otherwise just answer
+      const cardContent = isMatched
+        ? `<div class="card-question">${questionText}</div><div class="card-answer">${a.answer}</div>`
+        : a.answer;
 
       return `
         <div class="${classes}" data-id="${a.id}" data-question-id="${a.questionId}" data-type="answer">
           <div class="card-inner">
             <div class="card-back">?</div>
-            <div class="card-front">${a.answer}</div>
+            <div class="card-front">${cardContent}</div>
           </div>
         </div>
       `;
@@ -272,12 +297,12 @@ class MemoryMatch {
       const questionId = card.dataset.questionId;
       const isFlipped = this.flippedCards.has(answerId);
       const isMatched = this.matchedPairs.has(questionId);
-      const isDisabled = !this.selectedProblem || isMatched;
+      const isSelected = this.selectedAnswer?.id === answerId;
 
       // Update classes
       card.classList.toggle('flipped', isFlipped || isMatched);
       card.classList.toggle('matched', isMatched);
-      card.classList.toggle('disabled', isDisabled);
+      card.classList.toggle('selected', isSelected);
     });
   }
 
@@ -286,54 +311,98 @@ class MemoryMatch {
     if (this.showingError) return;
     if (this.matchedPairs.has(questionId)) return;
 
-    // Toggle selection
+    // If clicking the same problem card, deselect it
     if (this.selectedProblem?.id === questionId) {
       this.selectedProblem = null;
       this.flippedCards.delete(questionId);
-    } else {
-      // Deselect previous
-      if (this.selectedProblem) {
-        this.flippedCards.delete(this.selectedProblem.id);
-      }
-
-      // Select new
-      this.selectedProblem = this.questions.find(q => q.id === questionId);
-      this.flippedCards.add(questionId);
+      this.updateCardsDisplay();
+      return;
     }
 
+    // If an answer card is already selected, check for match
+    if (this.selectedAnswer) {
+      this.attempts++;
+      const attemptsElement = document.getElementById('attempts');
+      if (attemptsElement) {
+        attemptsElement.textContent = this.attempts;
+      }
+
+      // Flip the problem card
+      this.flippedCards.add(questionId);
+      this.updateCardsDisplay();
+
+      // Check if match (answer's questionId should match clicked problem's questionId)
+      if (this.selectedAnswer.questionId === questionId) {
+        // Correct match!
+        this.handleCorrectMatch(questionId);
+      } else {
+        // Incorrect match
+        this.handleIncorrectMatch(questionId, this.selectedAnswer.id);
+      }
+      return;
+    }
+
+    // No selection yet, select this problem card
+    if (this.selectedProblem) {
+      this.flippedCards.delete(this.selectedProblem.id);
+    }
+
+    this.selectedProblem = this.questions.find(q => q.id === questionId);
+    this.flippedCards.add(questionId);
     this.updateCardsDisplay();
   }
 
   handleAnswerClick(questionId, answerId) {
     if (this.gameEnded) return;
     if (this.showingError) return;
-    if (!this.selectedProblem) return;
     if (this.matchedPairs.has(questionId)) return;
 
-    // Flip the answer card
+    // If clicking the same answer card, deselect it
+    if (this.selectedAnswer?.id === answerId) {
+      this.selectedAnswer = null;
+      this.flippedCards.delete(answerId);
+      this.updateCardsDisplay();
+      return;
+    }
+
+    // If a problem card is already selected, check for match
+    if (this.selectedProblem) {
+      this.attempts++;
+      const attemptsElement = document.getElementById('attempts');
+      if (attemptsElement) {
+        attemptsElement.textContent = this.attempts;
+      }
+
+      // Flip the answer card
+      this.flippedCards.add(answerId);
+      this.updateCardsDisplay();
+
+      // Check if match
+      if (this.selectedProblem.id === questionId) {
+        // Correct match!
+        this.handleCorrectMatch(questionId);
+      } else {
+        // Incorrect match
+        this.handleIncorrectMatch(this.selectedProblem.id, answerId);
+      }
+      return;
+    }
+
+    // No selection yet, select this answer card
+    if (this.selectedAnswer) {
+      this.flippedCards.delete(this.selectedAnswer.id);
+    }
+
+    this.selectedAnswer = this.answers.find(a => a.id === answerId);
     this.flippedCards.add(answerId);
-    this.attempts++;
-
-    // Update attempts display
-    const attemptsElement = document.getElementById('attempts');
-    if (attemptsElement) {
-      attemptsElement.textContent = this.attempts;
-    }
-
-    // Check if match
-    if (this.selectedProblem.id === questionId) {
-      // Correct match!
-      this.handleCorrectMatch(questionId);
-    } else {
-      // Incorrect match
-      this.handleIncorrectMatch(answerId);
-    }
+    this.updateCardsDisplay();
   }
 
   handleCorrectMatch(questionId) {
     this.matchedPairs.add(questionId);
     this.correctMatches++;
     this.selectedProblem = null;
+    this.selectedAnswer = null;
 
     // Update stats display
     const matchedElement = document.getElementById('matched');
@@ -345,16 +414,16 @@ class MemoryMatch {
     if (this.correctMatches === 9) {
       setTimeout(() => {
         this.endGame('complete');
-      }, 500);
+      }, 1200);
     } else {
       this.updateCardsDisplay();
     }
   }
 
-  handleIncorrectMatch(answerId) {
+  handleIncorrectMatch(problemId, answerId) {
     // Store the error state - keep cards flipped and show overlay
     this.showingError = true;
-    this.errorAnswerId = answerId;
+    this.errorCardId = { problemId, answerId };
 
     // Update cards display to show both flipped
     this.updateCardsDisplay();
@@ -394,12 +463,12 @@ class MemoryMatch {
     }
 
     // Clear error state
-    const problemId = this.selectedProblem?.id;
-    const answerId = this.errorAnswerId;
+    const { problemId, answerId } = this.errorCardId || {};
 
     this.showingError = false;
-    this.errorAnswerId = null;
+    this.errorCardId = null;
     this.selectedProblem = null;
+    this.selectedAnswer = null;
 
     // Flip cards back
     if (problemId) {

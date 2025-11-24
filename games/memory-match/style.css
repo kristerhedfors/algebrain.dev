@@ -44,17 +44,12 @@
   transition: transform 0.2s, opacity 0.2s;
 }
 
-.card:hover:not(.disabled):not(.matched) {
+.card:hover:not(.matched) {
   transform: scale(1.05);
 }
 
-.card:active:not(.disabled):not(.matched) {
+.card:active:not(.matched) {
   transform: scale(0.95);
-}
-
-.card.disabled {
-  cursor: not-allowed;
-  opacity: 0.5;
 }
 
 .card.matched {
@@ -81,6 +76,7 @@
   height: 100%;
   backface-visibility: hidden;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: var(--text-xl);
@@ -98,6 +94,10 @@
   font-size: var(--text-3xl);
 }
 
+.answer-card .card-back {
+  background: linear-gradient(135deg, #ec407a, #d81b60);
+}
+
 .card-front {
   background: var(--color-surface);
   color: var(--color-text);
@@ -111,8 +111,8 @@
 }
 
 .answer-card .card-front {
-  background: linear-gradient(135deg, #f3e5f5, #e1bee7);
-  border-color: var(--color-secondary);
+  background: linear-gradient(135deg, #fce4ec, #f8bbd0);
+  border-color: #e91e63;
 }
 
 .card.selected .card-front {
@@ -157,6 +157,18 @@
   z-index: 10;
 }
 
+.card-question {
+  font-size: var(--text-sm);
+  font-weight: 400;
+  opacity: 0.7;
+  margin-bottom: var(--space-1);
+}
+
+.card-answer {
+  font-size: var(--text-xl);
+  font-weight: 600;
+}
+
 /* Error Overlay */
 .error-overlay {
   position: fixed;
@@ -164,7 +176,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.7);
+  background: transparent;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -564,6 +576,14 @@
     font-size: var(--text-xl);
   }
 
+  .card-question {
+    font-size: var(--text-xs);
+  }
+
+  .card-answer {
+    font-size: var(--text-lg);
+  }
+
   .game-header {
     flex-direction: column;
     padding: var(--space-4);
@@ -647,6 +667,15 @@
 
   .card-back {
     font-size: var(--text-lg);
+  }
+
+  .card-question {
+    font-size: 10px;
+    margin-bottom: 2px;
+  }
+
+  .card-answer {
+    font-size: var(--text-sm);
   }
 
   .card.matched::after {
